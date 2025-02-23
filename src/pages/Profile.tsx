@@ -2,8 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Grid, Settings, Image as ImageIcon, Bookmark } from "lucide-react";
+import { Settings } from "lucide-react";
 
 const Profile = () => {
   const posts = [
@@ -65,55 +64,24 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Posts Tabs */}
-        <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="posts" className="flex items-center gap-2">
-              <Grid className="h-4 w-4" />
-              <span className="hidden sm:inline">Posts</span>
-            </TabsTrigger>
-            <TabsTrigger value="saved" className="flex items-center gap-2">
-              <Bookmark className="h-4 w-4" />
-              <span className="hidden sm:inline">Saved</span>
-            </TabsTrigger>
-            <TabsTrigger value="tagged" className="flex items-center gap-2">
-              <ImageIcon className="h-4 w-4" />
-              <span className="hidden sm:inline">Tagged</span>
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="posts">
-            <div className="grid grid-cols-3 gap-1">
-              {posts.map((post) => (
-                <Card 
-                  key={post.id} 
-                  className="aspect-square relative group cursor-pointer overflow-hidden"
-                >
-                  <img 
-                    src={post.image} 
-                    alt={`Post ${post.id}`}
-                    className="object-cover w-full h-full transition-transform group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <div className="text-white font-medium">View Post</div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="saved">
-            <div className="text-center py-12 text-muted-foreground">
-              No saved posts yet
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="tagged">
-            <div className="text-center py-12 text-muted-foreground">
-              No tagged posts
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Posts Grid */}
+        <div className="grid grid-cols-3 gap-1">
+          {posts.map((post) => (
+            <Card 
+              key={post.id} 
+              className="aspect-square relative group cursor-pointer overflow-hidden"
+            >
+              <img 
+                src={post.image} 
+                alt={`Post ${post.id}`}
+                className="object-cover w-full h-full transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="text-white font-medium">View Post</div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
