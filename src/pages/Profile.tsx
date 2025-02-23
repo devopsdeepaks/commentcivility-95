@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Settings } from "lucide-react";
+import { Header } from "@/components/Header";
 
 const Profile = () => {
   const posts = [
@@ -22,6 +22,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
@@ -33,12 +34,7 @@ const Profile = () => {
           <div className="flex-1">
             <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
               <h1 className="text-2xl font-semibold">John Doe</h1>
-              <div className="flex gap-2">
-                <Button variant="outline">Edit Profile</Button>
-                <Button variant="ghost" size="icon">
-                  <Settings className="h-5 w-5" />
-                </Button>
-              </div>
+              <Button variant="outline">Edit Profile</Button>
             </div>
 
             <div className="flex justify-center md:justify-start gap-8 mb-4 text-sm">
