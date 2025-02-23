@@ -3,7 +3,6 @@ import {
   Home,
   Bell,
   User,
-  Settings,
   BarChart,
   LogOut,
 } from "lucide-react";
@@ -24,7 +23,6 @@ const menuItems = [
   { icon: Bell, label: "Notifications", href: "/notifications" },
   { icon: BarChart, label: "Sentiment Analysis", href: "/sentiment" },
   { icon: User, label: "Profile", href: "/profile" },
-  { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
 export function AppSidebar() {
