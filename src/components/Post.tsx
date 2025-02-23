@@ -31,6 +31,7 @@ interface Comment {
 
 export function Post({ username, avatar, content, image, timestamp }: PostProps) {
   const [comment, setComment] = useState("");
+  const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState<Comment[]>([
     {
       username: "AliceJohnson",
@@ -46,6 +47,10 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
     },
   ]);
   const { toast } = useToast();
+
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+  };
 
   const handleComment = async () => {
     const response = await fetch("https://api.openai.com/v1/moderations", {
@@ -111,8 +116,16 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
                 />
               )}
               <div className="flex items-center space-x-4 mt-4">
-                <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
-                  <Heart className="h-5 w-5" />
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLike();
+                  }}
+                  className={`flex items-center space-x-2 transition-colors ${
+                    isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'
+                  }`}
+                >
+                  <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
                   <span>Like</span>
                 </button>
                 <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
