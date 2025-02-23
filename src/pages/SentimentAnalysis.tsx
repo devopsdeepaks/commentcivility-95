@@ -1,192 +1,65 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { Header } from "@/components/Header";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-
-const samplePostSentiments = [
-  {
-    postId: 1,
-    content: "Just launched my new project!",
-    positive: 80,
-    negative: 20,
-  },
-  {
-    postId: 2,
-    content: "Having a tough day at work...",
-    positive: 30,
-    negative: 70,
-  },
-  {
-    postId: 3,
-    content: "Amazing conference experience!",
-    positive: 90,
-    negative: 10,
-  },
-  {
-    postId: 4,
-    content: "Mixed feelings about the new update",
-    positive: 50,
-    negative: 50,
-  },
-];
-
-const overallSentiment = {
-  positive: 65,
-  negative: 35,
-};
-
-const COLORS = ["#4ade80", "#f87171"];
 
 const SentimentAnalysis = () => {
-  const pieData = [
-    { name: "Positive", value: overallSentiment.positive },
-    { name: "Negative", value: overallSentiment.negative },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          Sentiment Analysis Dashboard
-        </h1>
-
-        {/* Overall Sentiment Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Overall Sentiment Distribution</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      paddingAngle={5}
-                      dataKey="value"
-                      label={({ name, value }) => `${name}: ${value}%`}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Sentiment Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Positive Sentiment</span>
-                  <span className="text-green-600 font-bold">
-                    {overallSentiment.positive}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-green-500 h-2.5 rounded-full"
-                    style={{ width: `${overallSentiment.positive}%` }}
-                  ></div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Negative Sentiment</span>
-                  <span className="text-red-600 font-bold">
-                    {overallSentiment.negative}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-red-500 h-2.5 rounded-full"
-                    style={{ width: `${overallSentiment.negative}%` }}
-                  ></div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gray-50">
+        <AppSidebar />
+        <div className="flex-1">
+          <Header />
+          <main className="max-w-2xl mx-auto px-4 py-6">
+            <h1 className="text-2xl font-bold mb-6">Sentiment Analysis</h1>
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-semibold mb-4">Overall Sentiment</h2>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <div className="text-green-600 font-medium">Positive</div>
+                    <div className="text-2xl font-bold">65%</div>
+                  </div>
+                  <div className="bg-yellow-50 p-4 rounded-lg">
+                    <div className="text-yellow-600 font-medium">Neutral</div>
+                    <div className="text-2xl font-bold">25%</div>
+                  </div>
+                  <div className="bg-red-50 p-4 rounded-lg">
+                    <div className="text-red-600 font-medium">Negative</div>
+                    <div className="text-2xl font-bold">10%</div>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Post-wise Sentiment Analysis */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Post-wise Sentiment Analysis</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={samplePostSentiments}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="postId" label={{ value: 'Post ID', position: 'insideBottom', offset: -5 }} />
-                  <YAxis label={{ value: 'Sentiment %', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const post = samplePostSentiments.find(
-                          (p) => p.postId === payload[0].payload.postId
-                        );
-                        return (
-                          <div className="bg-white p-4 border rounded-lg shadow-lg">
-                            <p className="font-medium">Post ID: {post?.postId}</p>
-                            <p className="text-sm text-gray-600 mb-2">
-                              "{post?.content}"
-                            </p>
-                            <p className="text-green-600">
-                              Positive: {payload[0].value}%
-                            </p>
-                            <p className="text-red-600">
-                              Negative: {payload[1].value}%
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Legend />
-                  <Bar dataKey="positive" fill="#4ade80" name="Positive" />
-                  <Bar dataKey="negative" fill="#f87171" name="Negative" />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-semibold mb-4">Recent Analysis</h2>
+                <div className="space-y-4">
+                  <div className="border-b pb-4">
+                    <p className="text-gray-600 mb-2">"Great experience with the new features!"</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-green-600 font-medium">Positive</span>
+                      <span className="text-sm text-gray-500">Score: 0.92</span>
+                    </div>
+                  </div>
+                  <div className="border-b pb-4">
+                    <p className="text-gray-600 mb-2">"The app is okay, but could use some improvements."</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-yellow-600 font-medium">Neutral</span>
+                      <span className="text-sm text-gray-500">Score: 0.45</span>
+                    </div>
+                  </div>
+                  <div className="pb-4">
+                    <p className="text-gray-600 mb-2">"Having issues with loading times."</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-red-600 font-medium">Negative</span>
+                      <span className="text-sm text-gray-500">Score: 0.15</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
