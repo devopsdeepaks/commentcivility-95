@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, MessageCircle, Share } from "lucide-react";
+import { Heart, MessageCircle, Share, Send } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -156,11 +156,15 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
           </div>
 
           {/* Right side - Comments */}
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full bg-[#F1F0FB] rounded-lg p-4">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">Comments ({comments.length})</h2>
             <div className="flex-1 overflow-y-auto pr-4">
               <div className="space-y-4">
                 {comments.map((comment, index) => (
-                  <div key={index} className="flex items-start space-x-4">
+                  <div 
+                    key={index} 
+                    className="flex items-start space-x-4 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                  >
                     <Avatar>
                       <AvatarImage src={comment.avatar} />
                       <AvatarFallback>{comment.username[0]}</AvatarFallback>
@@ -180,15 +184,22 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
             </div>
 
             {/* Comment input */}
-            <div className="mt-4 border-t pt-4">
-              <Textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Write a comment..."
-                className="min-h-[80px]"
-              />
-              <div className="flex justify-end mt-2">
-                <Button onClick={handleComment}>Post Comment</Button>
+            <div className="mt-4">
+              <div className="relative">
+                <Textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  className="min-h-[80px] pr-[100px] bg-white"
+                />
+                <Button 
+                  onClick={handleComment}
+                  className="absolute bottom-2 right-2 px-4 py-2"
+                  size="sm"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Post
+                </Button>
               </div>
             </div>
           </div>
