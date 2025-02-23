@@ -2,10 +2,9 @@
 import {
   Home,
   Bell,
-  Mail,
   User,
   Settings,
-  LogOut,
+  BarChart,
 } from "lucide-react";
 import {
   Sidebar,
@@ -20,7 +19,7 @@ import {
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
   { icon: Bell, label: "Notifications", href: "/notifications" },
-  { icon: Mail, label: "Messages", href: "/messages" },
+  { icon: BarChart, label: "Sentiment Analysis", href: "/sentiment" },
   { icon: User, label: "Profile", href: "/profile" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];

@@ -25,14 +25,26 @@ const Index = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50">
         <AppSidebar />
-        <main className="flex-1 max-w-2xl mx-auto px-4 py-6">
-          <CreatePost />
-          <div className="space-y-4">
-            {samplePosts.map((post, index) => (
-              <Post key={index} {...post} />
-            ))}
-          </div>
-        </main>
+        <div className="flex-1">
+          <header className="bg-white border-b border-gray-200 px-4 py-4">
+            <div className="max-w-2xl mx-auto flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-gray-900">Social Dashboard</h1>
+              <div className="flex items-center space-x-4">
+                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                  Overall Sentiment: Positive
+                </span>
+              </div>
+            </div>
+          </header>
+          <main className="max-w-2xl mx-auto px-4 py-6">
+            <CreatePost />
+            <div className="space-y-4">
+              {samplePosts.map((post, index) => (
+                <Post key={index} {...post} />
+              ))}
+            </div>
+          </main>
+        </div>
       </div>
     </SidebarProvider>
   );
