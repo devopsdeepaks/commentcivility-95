@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, MessageCircle, Share, Send } from "lucide-react";
+import { Heart, MessageCircle, Share, Send, ThumbsUp, ThumbsDown, Reply } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -27,29 +27,49 @@ interface Comment {
   avatar: string;
   content: string;
   timestamp: string;
+  sentiment?: 'positive' | 'negative';
+  replies?: Comment[];
 }
 
 export function Post({ username, avatar, content, image, timestamp }: PostProps) {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState(false);
+  const [replyTo, setReplyTo] = useState<number | null>(null);
+  const [replyContent, setReplyContent] = useState("");
   const [comments, setComments] = useState<Comment[]>([
     {
       username: "AliceJohnson",
       avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
       content: "This is amazing! Thanks for sharing.",
       timestamp: "1 hour ago",
+      sentiment: "positive",
+      replies: [],
     },
     {
       username: "BobWilson",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
       content: "Great work! Looking forward to seeing more.",
       timestamp: "30 minutes ago",
+      sentiment: "positive",
+      replies: [],
     },
   ]);
   const { toast } = useToast();
 
   const handleLike = () => {
     setIsLiked(!isLiked);
+  };
+
+  const analyzeSentiment = (text: string): 'positive' | 'negative' => {
+    // Simple sentiment analysis based on positive and negative words
+    const positiveWords = ['great', 'good', 'awesome', 'excellent', 'amazing', 'love', 'thanks', 'wonderful'];
+    const negativeWords = ['bad', 'poor', 'terrible', 'awful', 'horrible', 'hate', 'dislike', 'disappointed'];
+    
+    const words = text.toLowerCase().split(' ');
+    let positiveCount = words.filter(word => positiveWords.includes(word)).length;
+    let negativeCount = words.filter(word => negativeWords.includes(word)).length;
+    
+    return positiveCount >= negativeCount ? 'positive' : 'negative';
   };
 
   const handleComment = async () => {
@@ -74,6 +94,8 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
       return;
     }
 
+    const sentiment = analyzeSentiment(comment);
+
     setComments([
       ...comments,
       {
@@ -81,6 +103,8 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
         avatar: "https://github.com/shadcn.png",
         content: comment,
         timestamp: "Just now",
+        sentiment,
+        replies: [],
       },
     ]);
 
@@ -89,6 +113,33 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
       description: "Comment posted successfully!",
     });
     setComment("");
+  };
+
+  const handleReply = (commentIndex: number) => {
+    if (!replyContent.trim()) return;
+
+    const sentiment = analyzeSentiment(replyContent);
+    const newComments = [...comments];
+    if (!newComments[commentIndex].replies) {
+      newComments[commentIndex].replies = [];
+    }
+    
+    newComments[commentIndex].replies?.push({
+      username: "CurrentUser",
+      avatar: "https://github.com/shadcn.png",
+      content: replyContent,
+      timestamp: "Just now",
+      sentiment,
+    });
+
+    setComments(newComments);
+    setReplyContent("");
+    setReplyTo(null);
+
+    toast({
+      title: "Success",
+      description: "Reply posted successfully!",
+    });
   };
 
   return (
@@ -174,23 +225,101 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
             <div className="flex-1 overflow-y-auto pr-4">
               <div className="space-y-4">
                 {comments.map((comment, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-start space-x-4 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <Avatar>
-                      <AvatarImage src={comment.avatar} />
-                      <AvatarFallback>{comment.username[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-semibold">{comment.username}</h4>
-                        <span className="text-sm text-gray-500">
-                          {comment.timestamp}
-                        </span>
+                  <div key={index} className="space-y-3">
+                    <div className="flex items-start space-x-4 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                      <Avatar>
+                        <AvatarImage src={comment.avatar} />
+                        <AvatarFallback>{comment.username[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h4 className="font-semibold">{comment.username}</h4>
+                          <span className="text-sm text-gray-500">
+                            {comment.timestamp}
+                          </span>
+                          {comment.sentiment && (
+                            <span className={`flex items-center text-sm ${
+                              comment.sentiment === 'positive' ? 'text-green-500' : 'text-red-500'
+                            }`}>
+                              {comment.sentiment === 'positive' ? (
+                                <ThumbsUp className="h-4 w-4 mr-1" />
+                              ) : (
+                                <ThumbsDown className="h-4 w-4 mr-1" />
+                              )}
+                              {comment.sentiment}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-700 mt-1">{comment.content}</p>
+                        <button
+                          onClick={() => setReplyTo(replyTo === index ? null : index)}
+                          className="mt-2 text-sm text-blue-500 flex items-center hover:text-blue-600"
+                        >
+                          <Reply className="h-4 w-4 mr-1" />
+                          Reply
+                        </button>
                       </div>
-                      <p className="text-gray-700 mt-1">{comment.content}</p>
                     </div>
+
+                    {/* Reply input */}
+                    {replyTo === index && (
+                      <div className="ml-12 mt-2">
+                        <div className="relative">
+                          <Textarea
+                            value={replyContent}
+                            onChange={(e) => setReplyContent(e.target.value)}
+                            placeholder="Write a reply..."
+                            className="min-h-[60px] pr-[100px] bg-white"
+                          />
+                          <Button 
+                            onClick={() => handleReply(index)}
+                            className="absolute bottom-2 right-2 px-4 py-2"
+                            size="sm"
+                          >
+                            <Send className="h-4 w-4 mr-2" />
+                            Reply
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Replies */}
+                    {comment.replies && comment.replies.length > 0 && (
+                      <div className="ml-12 space-y-3">
+                        {comment.replies.map((reply, replyIndex) => (
+                          <div
+                            key={replyIndex}
+                            className="flex items-start space-x-4 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <Avatar>
+                              <AvatarImage src={reply.avatar} />
+                              <AvatarFallback>{reply.username[0]}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2">
+                                <h4 className="font-semibold">{reply.username}</h4>
+                                <span className="text-sm text-gray-500">
+                                  {reply.timestamp}
+                                </span>
+                                {reply.sentiment && (
+                                  <span className={`flex items-center text-sm ${
+                                    reply.sentiment === 'positive' ? 'text-green-500' : 'text-red-500'
+                                  }`}>
+                                    {reply.sentiment === 'positive' ? (
+                                      <ThumbsUp className="h-4 w-4 mr-1" />
+                                    ) : (
+                                      <ThumbsDown className="h-4 w-4 mr-1" />
+                                    )}
+                                    {reply.sentiment}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-gray-700 mt-1">{reply.content}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -221,3 +350,4 @@ export function Post({ username, avatar, content, image, timestamp }: PostProps)
     </Sheet>
   );
 }
+
