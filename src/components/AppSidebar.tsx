@@ -1,11 +1,4 @@
-
-import {
-  Home,
-  Bell,
-  User,
-  BarChart,
-  LogOut,
-} from "lucide-react";
+import { Home, Bell, User, BarChart, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -42,7 +35,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="py-16">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild>
@@ -56,12 +49,13 @@ export function AppSidebar() {
                         }
                         group relative overflow-hidden`}
                     >
-                      <item.icon className={`h-5 w-5 transition-colors duration-200 
+                      <item.icon
+                        className={`h-5 w-5 transition-colors duration-200 
                         ${
                           currentPath === item.href
                             ? "text-blue-600"
                             : "text-gray-500 group-hover:text-blue-600"
-                        }`} 
+                        }`}
                       />
                       <span className="font-medium">{item.label}</span>
                       {currentPath === item.href && (
